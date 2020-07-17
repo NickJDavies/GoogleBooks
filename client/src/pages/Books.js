@@ -18,7 +18,6 @@ function Books() {
   // Load all books and store them with setBooks
   useEffect(() => {
     loadBooks();
-    loadAPIBooks();
   }, [])
 
   // Loads all books and sets them to books
@@ -30,8 +29,8 @@ function Books() {
       .catch(err => console.log(err));
   };
 
-  function loadAPIBooks() {
-    API.getAPIBooks()
+  function loadAPIBooks(title) {
+    API.getAPIBooks(title)
       .then(res => 
         setAPIBooks(res.data.items)
       )
@@ -61,14 +60,8 @@ function Books() {
   // Then reload books from the database
   function handleFormSubmit(event) {
     event.preventDefault();
-    if (formObject.title && formObject.author) {
-      API.saveBook({
-        title: formObject.title,
-        author: formObject.author,
-        synopsis: formObject.synopsis
-      })
-        .then(res => loadBooks())
-        .catch(err => console.log(err));
+    if (true) {
+        loadAPIBooks(formObject.title)
     }
   };
 
@@ -78,8 +71,20 @@ function Books() {
         <Col size="md-6 sm-12">
             <Jumbotron>
               <h1>Google API books</h1>
-            </Jumbotron>
-            
+            </Jumbotron><form>
+              <Input
+                onChange={handleInputChange}
+                name="title"
+                placeholder="Title"
+              />
+              <FormBtn
+                onClick={handleFormSubmit}
+              >
+                Submit Book
+              </FormBtn>
+            </form>
+            <br />
+
             {APIBooks.length ? (
               <List>
                 {APIBooks.map(book => (

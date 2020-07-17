@@ -6,8 +6,8 @@ export default {
     return axios.get("/api/books");
   },
   
-  getAPIBooks: async function() {
-    return axios.get("https://www.googleapis.com/books/v1/volumes?q=harry_potter");
+  getAPIBooks: async function(title) {
+    return axios.get("https://www.googleapis.com/books/v1/volumes?q=" + title);
   },
 
   // Gets the book with the given id
@@ -17,10 +17,6 @@ export default {
   // Deletes the book with the given id
   deleteBook: function(id) {
     return axios.delete("/api/books/" + id);
-  },
-  // Saves a book to the database
-  saveBook: function(bookData) {
-    return axios.post("/api/books", bookData);
   },
   // saves a book from the api to the database
   saveAPIBook: function(volumeInfo) {
