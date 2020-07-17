@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import DeleteBtn from "../components/DeleteBtn";
+import SaveBtn from "../components/SaveBtn";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
@@ -7,32 +8,46 @@ import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, TextArea, FormBtn } from "../components/Form";
 
+
 function Books() {
   // Setting our component's initial state
+  const [APIBooks, setAPIBooks] = useState([])
   const [books, setBooks] = useState([])
   const [formObject, setFormObject] = useState({})
 
   // Load all books and store them with setBooks
   useEffect(() => {
-    async function fetchdata() {
-    await loadBooks()
-  };
-  fetchdata()
+    loadBooks();
+    loadAPIBooks();
   }, [])
 
   // Loads all books and sets them to books
-  async function loadBooks() {
-    await API.getBooks()
+  function loadBooks() {
+    API.getBooks()
       .then(res => 
         setBooks(res.data)
       )
       .catch(err => console.log(err));
   };
 
+  function loadAPIBooks() {
+    API.getAPIBooks()
+      .then(res => 
+        setAPIBooks(res.data.items)
+      )
+      .catch(err => console.log(err));
+  };
+
   // Deletes a book from the database with a given id, then reloads books from the db
-  async function deleteBook(id) {
+  function deleteBook(id) {
     API.deleteBook(id)
-      .then(async res => await loadBooks())
+      .then(res => loadBooks())
+      .catch(err => console.log(err));
+  }
+
+  function saveAPIBook(VolumeInfo) {
+    API.saveAPIBook(VolumeInfo)
+      .then(res => loadBooks())
       .catch(err => console.log(err));
   }
 
@@ -52,7 +67,7 @@ function Books() {
         author: formObject.author,
         synopsis: formObject.synopsis
       })
-        .then(async res => await loadBooks())
+        .then(res => loadBooks())
         .catch(err => console.log(err));
     }
   };
@@ -60,37 +75,33 @@ function Books() {
     return (
       <Container fluid>
         <Row>
-          <Col size="md-6">
+        <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>What Books Should I Read?</h1>
+              <h1>Google API books</h1>
             </Jumbotron>
-            <form>
-              <Input
-                onChange={handleInputChange}
-                name="title"
-                placeholder="Title (required)"
-              />
-              <Input
-                onChange={handleInputChange}
-                name="author"
-                placeholder="Author (required)"
-              />
-              <TextArea
-                onChange={handleInputChange}
-                name="synopsis"
-                placeholder="Synopsis (Optional)"
-              />
-              <FormBtn
-                disabled={!(formObject.author && formObject.title)}
-                onClick={handleFormSubmit}
-              >
-                Submit Book
-              </FormBtn>
-            </form>
+            
+            {APIBooks.length ? (
+              <List>
+                {APIBooks.map(book => (
+                  <ListItem key={book._id}>
+                      <strong>
+                {book.volumeInfo.title} by {book.volumeInfo.authors} 
+                      </strong>
+                      <br />
+                      {book.volumeInfo.imageLinks ? <img src={book.volumeInfo.imageLinks.thumbnail} /> : <img src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg" /> }
+                      {book.volumeInfo.description}
+                      <SaveBtn onClick={() => saveAPIBook(book.volumeInfo)} />
+                  </ListItem>
+                ))}
+              </List>
+
+            ) : (
+              <h3>No Results to Display</h3>
+            )}
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>Books On My List</h1>
+              <h1>Saved Books</h1>
             </Jumbotron>
             {books.length ? (
               <List>

@@ -2,11 +2,14 @@ import axios from "axios";
 
 export default {
   // Gets all books
-  getBooks: async function() {
-    let books = await axios.get("https://www.googleapis.com/books/v1/volumes?q=harry_potter")
-    console.log(books.data.items[0]);
-    return books;
+  getBooks: function() {
+    return axios.get("/api/books");
   },
+  
+  getAPIBooks: async function() {
+    return axios.get("https://www.googleapis.com/books/v1/volumes?q=harry_potter");
+  },
+
   // Gets the book with the given id
   getBook: function(id) {
     return axios.get("/api/books/" + id);
@@ -17,6 +20,16 @@ export default {
   },
   // Saves a book to the database
   saveBook: function(bookData) {
+    return axios.post("/api/books", bookData);
+  },
+  // saves a book from the api to the database
+  saveAPIBook: function(volumeInfo) {
+    let bookData = {
+      title: volumeInfo.title,
+      author: volumeInfo.authors[0],
+      thumbnail: volumeInfo.imageLinks.thumbnail,
+      description: volumeInfo.description
+    }
     return axios.post("/api/books", bookData);
   }
 };
