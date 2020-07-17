@@ -30,9 +30,10 @@ function Detail(props) {
         <Row>
           <Col size="md-10 md-offset-1">
             <article>
-              <h1>Synopsis</h1>
+              <img src={book.thumbnail} />
+              <h1>Description</h1>
               <p>
-                {book.synopsis}
+                {book.description}
               </p>
             </article>
           </Col>

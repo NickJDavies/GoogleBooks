@@ -25,10 +25,10 @@ export default {
   // saves a book from the api to the database
   saveAPIBook: function(volumeInfo) {
     let bookData = {
-      title: volumeInfo.title,
-      author: volumeInfo.authors[0],
-      thumbnail: volumeInfo.imageLinks.thumbnail,
-      description: volumeInfo.description
+      title: volumeInfo.title ? volumeInfo.title : "(no title)",
+      author: volumeInfo.authors ? volumeInfo.authors[0] : "(no author)",
+      thumbnail: volumeInfo.imageLinks ? volumeInfo.imageLinks.thumbnail : "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg",
+      description: volumeInfo.description ? volumeInfo.description : "(no description)"
     }
     return axios.post("/api/books", bookData);
   }
