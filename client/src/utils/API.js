@@ -2,8 +2,10 @@ import axios from "axios";
 
 export default {
   // Gets all books
-  getBooks: function() {
-    return axios.get("/api/books");
+  getBooks: async function() {
+    let books = await axios.get("https://www.googleapis.com/books/v1/volumes?q=harry_potter")
+    console.log(books.data.items[0]);
+    return books;
   },
   // Gets the book with the given id
   getBook: function(id) {

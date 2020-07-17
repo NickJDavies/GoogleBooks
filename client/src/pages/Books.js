@@ -14,12 +14,15 @@ function Books() {
 
   // Load all books and store them with setBooks
   useEffect(() => {
-    loadBooks()
+    async function fetchdata() {
+    await loadBooks()
+  };
+  fetchdata()
   }, [])
 
   // Loads all books and sets them to books
-  function loadBooks() {
-    API.getBooks()
+  async function loadBooks() {
+    await API.getBooks()
       .then(res => 
         setBooks(res.data)
       )
@@ -27,9 +30,9 @@ function Books() {
   };
 
   // Deletes a book from the database with a given id, then reloads books from the db
-  function deleteBook(id) {
+  async function deleteBook(id) {
     API.deleteBook(id)
-      .then(res => loadBooks())
+      .then(async res => await loadBooks())
       .catch(err => console.log(err));
   }
 
@@ -49,7 +52,7 @@ function Books() {
         author: formObject.author,
         synopsis: formObject.synopsis
       })
-        .then(res => loadBooks())
+        .then(async res => await loadBooks())
         .catch(err => console.log(err));
     }
   };
